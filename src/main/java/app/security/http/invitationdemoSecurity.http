@@ -1,0 +1,119 @@
+### GET all users
+GET {{url}}/auth/users
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Update user password (ADMIN only)
+PUT {{url}}/auth/user
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "username": "user2",
+  "password": "newpass123"
+}
+
+### Delete a user (ADMIN only)
+DELETE {{url}}/auth/user/user2
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+
+### A simple get request to the test endpoint. No need for login
+GET {{url}}/auth/test/
+
+### Create a new user - this one will only get a USER role by default
+POST {{url}}/auth/register/
+
+{
+    "username": "Umair",
+    "password": "Umair230104"
+}
+
+###
+POST {{url}}/auth/login/
+
+{
+    "username": "Umair",
+    "password": "Umair230104"
+}
+
+> {%
+    client.global.set("jwt_token", response.body.token);
+    console.log("JWT Token:", client.global.get("jwt_token"));
+%}
+
+###
+GET {{url}}/protected/user_demo/
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+###
+GET {{url}}/protected/admin_demo/
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Add admin role to user
+POST {{url}}/auth/user/addrole/
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "role": "admin"
+}
+
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+
+
+
+
+
+
+### ------------------------------------- CRUD operations for Invitations -------------------------------------
+
+### UPDATE
+PUT  {{url}}/invitations/10/updateinvitation
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "name": "Updated Invitation",
+  "phoneNumber": "4444",
+  "people": 1,
+  "ekstraInput1": "Ekstra input 1"
+}
+
+### GET request with a header
+GET {{url}}/invitations/
+Accept: application/json
+
+### DELETE
+DELETE {{url}}/invitations/9/
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+### POST example
+POST {{url}}/invitations/createinvitation
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "name": "Invitation 3",
+  "phoneNumber": "4444",
+  "people": 1,
+  "ekstraInput1": "Ekstra input 1"
+}
+
+### Reset token
+GET {{url}}/auth/test/
+
+> {%
+    client.global.set("jwt_token", null);
+    console.log("JWT Token:", client.global.get("jwt_token"));
+%}
+
+###

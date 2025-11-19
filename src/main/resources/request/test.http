@@ -1,0 +1,29 @@
+### Get all hotels
+GET {{URL}}
+
+###
+POST http://localhost:7700/api/v1/invitations/createinvitation
+Content-Type: application/json
+
+{
+  "name": "Invitation 3",
+  "phoneNumber": "4444",
+  "people": 1,
+  "ekstraInput1": "Ekstra input 1"
+}
+
+###
+DELETE {{URL}}/3
+
+###
+PUT http://localhost:7700/api/v1/invitations/2/updateinvitation
+Content-Type: application/json
+
+{
+  "name": "Updated Invitation",
+  "phoneNumber": "1234",
+  "people": 6,
+  "ekstraInput1": "Ekstra input 1"
+
+}
+
