@@ -1,0 +1,72 @@
+@startuml
+left to right direction
+
+actor "Kunde" as Customer
+actor "Admin" as Admin
+actor "Loop API" as LoopAPI
+actor "Shopify\n(rabatkoder / ordre)" as Shopify
+
+rectangle "Spin & Win system" as System {
+
+  ' --- FÆLLES FLOW (kunde/admin) ---
+  usecase "Indtast e-mail/telefon" as UC1
+  usecase "Tjek bruger i Loop API" as UC2
+  usecase "Tjek aktivt abonnement" as UC3
+  usecase "Vis spin-hjul side" as UC4
+  usecase "Spinne hjulet" as UC5
+
+  ' --- KUNDE SPECIFIKT ---
+  usecase "Håndter udfald\n(Prøv igen / Intet vundet / Præmie)" as UC6
+  usecase "Vis vundet-side\n(med præmie/rabatkode)" as UC7
+  usecase "Vis ikke-vundet-side" as UC8
+  usecase "Registrér præmie til\nkundens næste levering" as UC9
+
+  ' --- ADMIN LOGIN & PANEL ---
+  usecase "Admin login (password)" as UC10
+  usecase "Se admin menu\n(Spin / Admin panel)" as UC11
+  usecase "Test spin som admin" as UC12
+  usecase "Administrér hjul-felter\n(navn, billede, rabatkode)" as UC13
+}
+
+' --- KOBLINGER ---
+
+' Kunde bruger systemet
+Customer --> UC1
+
+' Admin bruger samme indgang (samme e-mail felt)
+Admin --> UC1
+
+' Systemets interne steps ved login
+UC1 --> UC2 : <<include>>
+UC2 --> LoopAPI : "Hent kunde\ndata og abonnement"
+UC2 --> UC3 : <<include>>
+
+' Hvis kunde har aktivt abonnement → vis spin-hjul
+UC3 --> UC4 : <<include>>
+
+' Selve spin
+Customer --> UC5
+UC5 --> UC6 : <<include>>
+
+' Udfald fra spin
+UC6 --> UC7 : <<extend>>  : "Hvis præmie"
+UC6 --> UC8 : <<extend>>  : "Hvis intet vundet"
+UC6 --> UC5 : <<extend>>  : "Hvis Prøv igen"
+
+' Registrér præmien til næste levering (Shopify/Loop)
+UC6 --> UC9 : <<include>>
+UC9 --> Shopify : "Tilføj rabatkode/produkt\n til næste ordre/levering"
+
+' Admin-flow
+Admin --> UC10
+UC10 --> UC11 : <<include>>
+
+' Fra admin menu
+Admin --> UC12
+Admin --> UC13
+
+' Admin spin er samme oplevelse som kunden
+UC12 --> UC4 : <<include>>
+UC12 --> UC5 : <<include>>
+
+@enduml
