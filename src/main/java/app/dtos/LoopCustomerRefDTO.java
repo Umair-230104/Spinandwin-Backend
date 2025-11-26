@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LoopCustomerRefDTO {
-    private long id;          // Loop customer id
-    private long shopifyId;   // kan bruges senere, optional
+    private Long id;          // Loop customer id
+    private Long shopifyId;   // kan bruges senere, optional
 }

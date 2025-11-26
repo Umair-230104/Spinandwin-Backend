@@ -35,11 +35,14 @@ public class HibernateConfig
     // TODO: IMPORTANT: Add Entity classes here for them to be registered with Hibernate
     private static void getAnnotationConfiguration(Configuration configuration)
     {
-
-
         configuration.addAnnotatedClass(app.security.entities.User.class);
         configuration.addAnnotatedClass(app.security.entities.Role.class);
-
+        configuration.addAnnotatedClass(app.entities.Customer.class);
+        configuration.addAnnotatedClass(app.entities.Delivery.class);
+        configuration.addAnnotatedClass(app.entities.SpinResult.class);
+        configuration.addAnnotatedClass(app.entities.SpinWheel.class);
+        configuration.addAnnotatedClass(app.entities.Subscription.class);
+        configuration.addAnnotatedClass(app.entities.WheelSegment.class);
     }
 
     private static EntityManagerFactory createEMF(boolean forTest, String DBName)
@@ -85,7 +88,7 @@ public class HibernateConfig
     {
         // props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         props.put("hibernate.connection.driver_class", "org.postgresql.Driver");
-        props.put("hibernate.hbm2ddl.auto", "update"); //Vi skal lige ændre til update igen
+        props.put("hibernate.hbm2ddl.auto", "create"); //Vi skal lige ændre til update igen
         props.put("hibernate.current_session_context_class", "thread");
         props.put("hibernate.show_sql", "true");
         props.put("hibernate.format_sql", "true");

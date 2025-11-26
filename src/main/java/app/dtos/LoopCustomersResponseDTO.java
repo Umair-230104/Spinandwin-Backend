@@ -9,10 +9,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LoopSubscriptionsResponseDTO {
+public class LoopCustomersResponseDTO {
+
     private boolean success;
     private String message;
-    private List<LoopSubscriptionDTO> data;
+    private List<LoopCustomerDTO> data;
     private String code;
-    private LoopPageInfoDTO pageInfo; // 👈 vigtig for hasNextPage
+
+    private LoopPageInfoDTO pageInfo; // 👈 NY
 }

@@ -1,5 +1,6 @@
 package app.entities;
 
+import app.dtos.LoopCustomerDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,16 +19,27 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private String firstName;
+    private String lastName;
     private String email;           // kan være null hvis de kun bruger telefon
     private String phone;           // kan være null hvis de kun bruger email
-
     private Long loopCustomerId;    // id fra Loop API
 
     @Column(nullable = false)
     private boolean activeSubscription; // true/false – kan holdes i sync med Loop
 
-    @Column(updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+
+    public Customer(LoopCustomerDTO loopCustomerDTO)
+    {
+
+        this.loopCustomerId = loopCustomerDTO.getLoopCustomerId();
+        this.firstName = loopCustomerDTO.getFirstName();
+        this.lastName = loopCustomerDTO.getLastName();
+        this.email = loopCustomerDTO.getEmail();
+        this.phone = loopCustomerDTO.getPhone();
+        this.activeSubscription =
+                loopCustomerDTO.getActiveSubscriptionsCount() != null
+                        && loopCustomerDTO.getActiveSubscriptionsCount() > 0;
+
+    }
 }
