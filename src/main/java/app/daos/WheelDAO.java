@@ -1,6 +1,7 @@
 package app.daos;
 
 import app.entities.WheelSegment;
+import app.dtos.WheelSegmentDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -36,53 +37,67 @@ public class WheelDAO
         }
     }
 
-    // UPDATE PRIZE FIELDS
-    /** Opdaterer præmiefelter for et PRIZE-segment (prizeName, discountCode, productSku) samt title og imageUrl. */
-    public WheelSegment updatePrizeFields(
-            Long id,
-            String title,
-            String imageUrl,
-            String prizeName,
-            String discountCode
-    )
-    {
+    // GET BY ID
+    public WheelSegment getById(Long id) {
         EntityManager em = emf.createEntityManager();
-
-        try
-        {
-            em.getTransaction().begin();
-
-            WheelSegment segment = em.find(WheelSegment.class, id);
-
-            if (segment == null)
-            {
-                throw new IllegalArgumentException("Wheel segment not found: " + id);
-            }
-
-            if (!segment.getType().name().equals("PRIZE"))
-            {
-                throw new IllegalStateException("This wheel segment is not a PRIZE segment.");
-            }
-
-            segment.setTitle(title);
-            segment.setImageUrl(imageUrl);
-            segment.setPrizeName(prizeName);
-            segment.setDiscountCode(discountCode);
-
-            WheelSegment updated = em.merge(segment);
-
-            em.getTransaction().commit();
-            return updated;
-
-        } catch (Exception e)
-        {
-            em.getTransaction().rollback();
-            throw e;
-
-        } finally
-        {
+        try {
+            return em.find(WheelSegment.class, id);
+        } finally {
             em.close();
         }
+    }
+
+
+    // UPDATE
+    public WheelSegmentDTO update(Long id, WheelSegmentDTO dto) throws Exception {
+        EntityManager em = emf.createEntityManager();
+        WheelSegmentDTO updatedDTO;
+
+        try {
+            em.getTransaction().begin();
+
+            WheelSegment existing = em.find(WheelSegment.class, id);
+
+            if (existing == null) {
+                throw new Exception("Wheel segment with id " + id + " not found");
+            }
+
+            // Opdater felter baseret på DTO
+            existing.setPosition(dto.getPosition());
+            existing.setType(dto.getType());
+            existing.setTitle(dto.getTitle());
+            existing.setImageUrl(dto.getImageUrl());
+            existing.setPrizeName(dto.getPrizeName());
+            existing.setDiscountCode(dto.getDiscountCode());
+            existing.setProductSku(dto.getProductSku());
+            existing.setActive(dto.isActive());
+
+            WheelSegment merged = em.merge(existing);
+            updatedDTO = new WheelSegmentDTO(
+                    merged.getId(),
+                    merged.getWheel() != null ? merged.getWheel().getId() : null,
+                    merged.getPosition(),
+                    merged.getType(),
+                    merged.getTitle(),
+                    merged.getImageUrl(),
+                    merged.getPrizeName(),
+                    merged.getDiscountCode(),
+                    merged.getProductSku(),
+                    merged.isActive()
+            );
+
+            em.getTransaction().commit();
+
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
+        }
+
+        return updatedDTO;
     }
 
     // DELETE
