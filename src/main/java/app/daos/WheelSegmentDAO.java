@@ -1,18 +1,17 @@
 package app.daos;
 
 import app.dtos.WheelSegmentDTO;
-import app.entities.Customer;
 import app.entities.WheelSegment;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
 
-public class WheelDAO
+public class WheelSegmentDAO
 {
     private final EntityManagerFactory emf;
 
-    public WheelDAO(EntityManagerFactory emf)
+    public WheelSegmentDAO(EntityManagerFactory emf)
     {
         this.emf = emf;
     }
@@ -47,7 +46,7 @@ public class WheelDAO
     }
 
     // UPDATE
-    public WheelSegmentDTO update(Long id, WheelSegmentDTO dto) throws Exception
+    public WheelSegmentDTO update(int id, WheelSegmentDTO dto) throws Exception
     {
         EntityManager em = emf.createEntityManager();
         WheelSegmentDTO updatedDTO;
