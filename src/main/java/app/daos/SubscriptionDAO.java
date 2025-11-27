@@ -6,53 +6,62 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
 
-public class SubscriptionDAO {
-
+public class SubscriptionDAO
+{
     private final EntityManagerFactory emf;
 
-    public SubscriptionDAO(EntityManagerFactory emf) {
+    public SubscriptionDAO(EntityManagerFactory emf)
+    {
         this.emf = emf;
     }
 
-    // CREATE
-    public Subscription create(Subscription subscription) {
-        try (EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            em.persist(subscription);
-            em.getTransaction().commit();
-            return subscription;
-        }
-    }
-
     // GET ALL
-    public List<Subscription> getAll() {
-        try (EntityManager em = emf.createEntityManager()) {
-            return em.createQuery("SELECT s FROM Subscription s", Subscription.class)
-                    .getResultList();
+    public List<Subscription> getAll()
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT s FROM Subscription s", Subscription.class).getResultList();
         }
     }
 
     // GET BY ID
-    public Subscription getById(Long id) {
+    public Subscription getById(Long id)
+    {
         EntityManager em = emf.createEntityManager();
-        try {
+        try
+        {
             return em.find(Subscription.class, id);
-        } finally {
+        } finally
+        {
             em.close();
         }
     }
 
+    // CREATE
+    public void create(Subscription subscription)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            em.getTransaction().begin();
+            em.persist(subscription);
+            em.getTransaction().commit();
+        }
+    }
+
     // UPDATE
-    public Subscription update(Long id, Subscription updatedData) throws Exception {
+    public Subscription update(Long id, Subscription updatedData) throws Exception
+    {
         EntityManager em = emf.createEntityManager();
         Subscription updated;
 
-        try {
+        try
+        {
             em.getTransaction().begin();
 
             Subscription existing = em.find(Subscription.class, id);
 
-            if (existing == null) {
+            if (existing == null)
+            {
                 throw new Exception("Subscription with id " + id + " not found");
             }
 
@@ -66,12 +75,15 @@ public class SubscriptionDAO {
 
             em.getTransaction().commit();
 
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
+        } catch (Exception e)
+        {
+            if (em.getTransaction().isActive())
+            {
                 em.getTransaction().rollback();
             }
             throw e;
-        } finally {
+        } finally
+        {
             em.close();
         }
 
@@ -79,15 +91,18 @@ public class SubscriptionDAO {
     }
 
     // DELETE
-    public void delete(Long id) {
+    public void delete(Long id)
+    {
         EntityManager em = emf.createEntityManager();
 
-        try {
+        try
+        {
             em.getTransaction().begin();
 
             Subscription subscription = em.find(Subscription.class, id);
 
-            if (subscription == null) {
+            if (subscription == null)
+            {
                 throw new IllegalArgumentException("Subscription not found: " + id);
             }
 
@@ -95,11 +110,13 @@ public class SubscriptionDAO {
 
             em.getTransaction().commit();
 
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             em.getTransaction().rollback();
             throw e;
 
-        } finally {
+        } finally
+        {
             em.close();
         }
     }

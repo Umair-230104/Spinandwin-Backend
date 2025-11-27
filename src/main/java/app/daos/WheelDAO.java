@@ -1,7 +1,8 @@
 package app.daos;
 
-import app.entities.WheelSegment;
 import app.dtos.WheelSegmentDTO;
+import app.entities.Customer;
+import app.entities.WheelSegment;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -9,7 +10,6 @@ import java.util.List;
 
 public class WheelDAO
 {
-
     private final EntityManagerFactory emf;
 
     public WheelDAO(EntityManagerFactory emf)
@@ -17,48 +17,49 @@ public class WheelDAO
         this.emf = emf;
     }
 
-    // CREATE
-    public WheelSegment create(WheelSegment segment) {
-        try (EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            em.persist(segment);
-            em.getTransaction().commit();
-            return segment;
-        }
-    }
-
     // GET ALL
     public List<WheelSegment> getAll()
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            return em.createQuery("SELECT w FROM WheelSegment w", WheelSegment.class)
-                    .getResultList();
+            return em.createQuery("SELECT w FROM WheelSegment w", WheelSegment.class).getResultList();
         }
     }
 
     // GET BY ID
-    public WheelSegment getById(Long id) {
-        EntityManager em = emf.createEntityManager();
-        try {
+    public WheelSegment getById(Long id)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
             return em.find(WheelSegment.class, id);
-        } finally {
-            em.close();
         }
     }
 
+    // CREATE
+    public void create(WheelSegment segment)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            em.getTransaction().begin();
+            em.persist(segment);
+            em.getTransaction().commit();
+        }
+    }
 
     // UPDATE
-    public WheelSegmentDTO update(Long id, WheelSegmentDTO dto) throws Exception {
+    public WheelSegmentDTO update(Long id, WheelSegmentDTO dto) throws Exception
+    {
         EntityManager em = emf.createEntityManager();
         WheelSegmentDTO updatedDTO;
 
-        try {
+        try
+        {
             em.getTransaction().begin();
 
             WheelSegment existing = em.find(WheelSegment.class, id);
 
-            if (existing == null) {
+            if (existing == null)
+            {
                 throw new Exception("Wheel segment with id " + id + " not found");
             }
 
@@ -73,27 +74,19 @@ public class WheelDAO
             existing.setActive(dto.isActive());
 
             WheelSegment merged = em.merge(existing);
-            updatedDTO = new WheelSegmentDTO(
-                    merged.getId(),
-                    merged.getWheel() != null ? merged.getWheel().getId() : null,
-                    merged.getPosition(),
-                    merged.getType(),
-                    merged.getTitle(),
-                    merged.getImageUrl(),
-                    merged.getPrizeName(),
-                    merged.getDiscountCode(),
-                    merged.getProductSku(),
-                    merged.isActive()
-            );
+            updatedDTO = new WheelSegmentDTO(merged.getId(), merged.getWheel() != null ? merged.getWheel().getId() : null, merged.getPosition(), merged.getType(), merged.getTitle(), merged.getImageUrl(), merged.getPrizeName(), merged.getDiscountCode(), merged.getProductSku(), merged.isActive());
 
             em.getTransaction().commit();
 
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
+        } catch (Exception e)
+        {
+            if (em.getTransaction().isActive())
+            {
                 em.getTransaction().rollback();
             }
             throw e;
-        } finally {
+        } finally
+        {
             em.close();
         }
 
@@ -101,15 +94,18 @@ public class WheelDAO
     }
 
     // DELETE
-    public void delete(Long id) {
+    public void delete(Long id)
+    {
         EntityManager em = emf.createEntityManager();
 
-        try {
+        try
+        {
             em.getTransaction().begin();
 
             WheelSegment segment = em.find(WheelSegment.class, id);
 
-            if (segment == null) {
+            if (segment == null)
+            {
                 throw new IllegalArgumentException("Wheel segment not found: " + id);
             }
 
@@ -117,11 +113,13 @@ public class WheelDAO
 
             em.getTransaction().commit();
 
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             em.getTransaction().rollback();
             throw e;
 
-        } finally {
+        } finally
+        {
             em.close();
         }
     }
