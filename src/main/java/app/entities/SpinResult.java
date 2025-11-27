@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SpinResult {
-
+public class SpinResult
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,9 +33,7 @@ public class SpinResult {
     @ManyToOne
     @JoinColumn(name = "segment_id")
     private WheelSegment segment;
-
     private LocalDateTime spunAt;
-
     private boolean prizeApplied;       // om præmien er lagt på næste levering
     private String appliedToOrderId;    // fx Shopify/Loop order id
 }

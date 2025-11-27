@@ -12,14 +12,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SpinWheel {
-
+public class SpinWheel
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;       // fx "Standard hjul"
-
     private boolean active;    // hvilket hjul der bruges nu
 
     @OneToMany(mappedBy = "wheel", cascade = CascadeType.ALL, orphanRemoval = true)

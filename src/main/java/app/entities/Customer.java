@@ -5,16 +5,14 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "customers")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer {
+public class Customer
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +25,6 @@ public class Customer {
 
     @Column(nullable = false)
     private boolean activeSubscription; // true/false – kan holdes i sync med Loop
-
 
     public Customer(LoopCustomerDTO loopCustomerDTO)
     {

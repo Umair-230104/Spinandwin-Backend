@@ -13,12 +13,11 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Delivery {
-
+public class Delivery
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String loopDeliveryId;     // hvis du får et id fra Loop
 
     @ManyToOne
@@ -27,8 +26,6 @@ public class Delivery {
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;      // fx "PENDING", "SHIPPED", "CANCELLED"
-
     private LocalDateTime shippedAt;   // sættes når levering er sendt
-
     private Integer sequenceNo;        // hvilken levering i rækken (1,2,3...)
 }

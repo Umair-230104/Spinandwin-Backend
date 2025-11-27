@@ -1,7 +1,9 @@
 package app.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -9,10 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LoopSubscriptionsResponseDTO {
+public class LoopSubscriptionsResponseDTO
+{
     private boolean success;
     private String message;
     private List<LoopSubscriptionDTO> data;
     private String code;
-    private LoopPageInfoDTO pageInfo; // 👈 vigtig for hasNextPage
+    private LoopPageInfoDTO pageInfo;
 }

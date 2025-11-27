@@ -16,11 +16,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Subscription
 {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Long loopSubscriptionId;
 
     @ManyToOne
@@ -29,7 +27,6 @@ public class Subscription
 
     @Enumerated(EnumType.STRING)
     private SubscriptionStatus status;
-
     private LocalDateTime nextBillingAt;
 
     public Subscription(LoopSubscriptionDTO loopSubscriptionDTO)
@@ -39,19 +36,21 @@ public class Subscription
         this.nextBillingAt = LocalDateTime.ofEpochSecond(loopSubscriptionDTO.getNextBillingDateEpoch(), 0, java.time.ZoneOffset.UTC);
     }
 
-    public Subscription(LoopSubscriptionDTO dto, Customer customer) {
+    public Subscription(LoopSubscriptionDTO dto, Customer customer)
+    {
         this.loopSubscriptionId = dto.getLoopSubscriptionId();
         this.customer = customer;
 
-        if (dto.getStatus() != null) {
+        if (dto.getStatus() != null)
+        {
             this.status = SubscriptionStatus.valueOf(dto.getStatus());
         }
 
-        if (dto.getNextBillingDateEpoch() != null) {
+        if (dto.getNextBillingDateEpoch() != null)
+        {
             this.nextBillingAt = LocalDateTime.ofEpochSecond(
                     dto.getNextBillingDateEpoch(), 0, java.time.ZoneOffset.UTC
             );
         }
     }
-
 }
