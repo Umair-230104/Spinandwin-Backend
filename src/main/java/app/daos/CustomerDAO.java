@@ -21,7 +21,7 @@ public class CustomerDAO
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            return em.createQuery("SELECT i FROM Customer i", Customer.class).getResultList();
+            return em.createQuery("SELECT c FROM Customer c", Customer.class).getResultList();
         }
     }
 
