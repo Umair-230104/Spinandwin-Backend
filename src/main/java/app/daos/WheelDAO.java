@@ -36,6 +36,17 @@ public class WheelDAO
         }
     }
 
+    // GET BY ID
+    public WheelSegment getById(Long id) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.find(WheelSegment.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+
     // UPDATE PRIZE FIELDS
     /** Opdaterer præmiefelter for et PRIZE-segment (prizeName, discountCode, productSku) samt title og imageUrl. */
     public WheelSegment updatePrizeFields(

@@ -1,6 +1,7 @@
 package app.daos;
 
 import app.entities.Customer;
+import app.dtos.LoopCustomerDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -71,6 +72,51 @@ public class CustomerDAO
 
 
     // UPDATE
-    // tilføj update metode her
+    public LoopCustomerDTO update(Long id, LoopCustomerDTO dto) throws Exception {
+        EntityManager em = emf.createEntityManager();
+        LoopCustomerDTO updatedDTO;
+
+        try {
+            em.getTransaction().begin();
+
+            Customer existingCustomer = em.find(Customer.class, id);
+
+            if (existingCustomer != null) {
+
+                // Update fields
+                existingCustomer.setFirstName(dto.getFirstName());
+                existingCustomer.setLastName(dto.getLastName());
+                existingCustomer.setEmail(dto.getEmail());
+                existingCustomer.setPhone(dto.getPhone());
+
+                // loopCustomerId only if you want it updatable
+                existingCustomer.setLoopCustomerId(dto.getLoopCustomerId());
+
+                // Active subscription (boolean)
+                existingCustomer.setActiveSubscription(
+                        dto.getActiveSubscriptionsCount() != null &&
+                                dto.getActiveSubscriptionsCount() > 0
+                );
+
+                Customer merged = em.merge(existingCustomer);
+                updatedDTO = new LoopCustomerDTO(merged);
+
+            } else {
+                throw new Exception("Customer with id " + id + " not found");
+            }
+
+            em.getTransaction().commit();
+
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
+        }
+
+        return updatedDTO;
+    }
 
 }
