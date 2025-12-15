@@ -17,3 +17,20 @@ Content-Type: application/json
   "active": false
 }
 
+### Check eligibility (email)
+POST http://localhost:2222/api/v1/customer/check-eligibility
+Content-Type: application/json
+
+{
+  "emailOrPhone": "email@email.dk"
+}
+
+
+
+### Check eligibility (phone)
+POST http://localhost:2222/api/v1/customer/check-eligibility
+Content-Type: application/json
+
+{
+  "emailOrPhone": "12211221"
+}

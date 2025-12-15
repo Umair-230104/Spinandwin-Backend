@@ -88,7 +88,7 @@ public class HibernateConfig
     {
         // props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         props.put("hibernate.connection.driver_class", "org.postgresql.Driver");
-        props.put("hibernate.hbm2ddl.auto", "create"); //Vi skal lige ændre til update igen
+        props.put("hibernate.hbm2ddl.auto", "update"); //Vi skal lige ændre til update igen
         props.put("hibernate.current_session_context_class", "thread");
         props.put("hibernate.show_sql", "true");
         props.put("hibernate.format_sql", "true");

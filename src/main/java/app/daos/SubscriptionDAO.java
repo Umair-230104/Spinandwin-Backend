@@ -1,5 +1,6 @@
 package app.daos;
 
+import app.Enums.SubscriptionStatus;
 import app.entities.Subscription;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -120,4 +121,27 @@ public class SubscriptionDAO
             em.close();
         }
     }
+
+    /**
+     * Tjekker om der findes mindst ét abonnement
+     * for en given customer med en given status.
+     */
+    public boolean existsByCustomerIdAndStatus(Long customerId, SubscriptionStatus status) {
+        try (EntityManager em = emf.createEntityManager()) {
+
+            String jpql = """
+                    SELECT COUNT(s) FROM Subscription s
+                    WHERE s.customer.id = :customerId
+                      AND s.status = :status
+                    """;
+
+            Long count = em.createQuery(jpql, Long.class)
+                    .setParameter("customerId", customerId)
+                    .setParameter("status", status)
+                    .getSingleResult();
+
+            return count != null && count > 0;
+        }
+    }
+
 }

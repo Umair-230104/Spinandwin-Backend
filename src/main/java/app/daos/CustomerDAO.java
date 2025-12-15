@@ -125,4 +125,36 @@ public class CustomerDAO
             em.close();
         }
     }
+
+
+    public Customer findSingleByEmailOrPhone(String emailOrPhone) {
+        try (EntityManager em = emf.createEntityManager()) {
+
+            String value = emailOrPhone.trim(); // fjern whitespace i begge ender
+
+            String jpql = """
+                SELECT c FROM Customer c
+                WHERE (c.email IS NOT NULL AND lower(c.email) = lower(:value))
+                   OR (c.phone IS NOT NULL AND c.phone = :value)
+                """;
+
+            List<Customer> customers = em.createQuery(jpql, Customer.class)
+                    .setParameter("value", value)
+                    .getResultList();
+
+            if (customers.isEmpty()) {
+                // ingen kunde fundet med hverken email eller telefon
+                return null;
+            }
+
+            if (customers.size() > 1) {
+                // Valgfrit: log eller smid exception, så du ved der er dataproblem
+                // throw new IllegalStateException("Flere kunder fundet med: " + value);
+            }
+
+            // Tag første kunde (normalt vil der kun være én)
+            return customers.get(0);
+        }
+    }
+
 }

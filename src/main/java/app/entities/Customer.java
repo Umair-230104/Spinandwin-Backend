@@ -19,7 +19,11 @@ public class Customer
     private Long id;
     private String firstName;
     private String lastName;
-    private String email;           // kan være null hvis de kun bruger telefon
+
+    @Column(unique = true)
+    private String email;
+
+    @Column(unique = true)          // kan være null hvis de kun bruger telefon
     private String phone;           // kan være null hvis de kun bruger email
     private Long loopCustomerId;    // id fra Loop API
 
