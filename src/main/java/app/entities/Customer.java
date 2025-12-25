@@ -27,6 +27,9 @@ public class Customer
     private String phone;           // kan være null hvis de kun bruger email
     private Long loopCustomerId;    // id fra Loop API
 
+    @Column(unique = true)         // ✅ vigtig
+    private Long shopifyId;        // Shopify customer id (bruges til /customer/{customerShopifyId})
+
     @Column(nullable = false)
     private boolean activeSubscription; // true/false – kan holdes i sync med Loop
 
@@ -34,6 +37,7 @@ public class Customer
     {
 
         this.loopCustomerId = loopCustomerDTO.getLoopCustomerId();
+        this.shopifyId = loopCustomerDTO.getShopifyId();
         this.firstName = loopCustomerDTO.getFirstName();
         this.lastName = loopCustomerDTO.getLastName();
         this.email = loopCustomerDTO.getEmail();

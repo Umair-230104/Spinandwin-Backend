@@ -144,4 +144,23 @@ public class SubscriptionDAO
         }
     }
 
+    public Subscription findByLoopSubscriptionId(Long loopSubscriptionId) {
+        try (var em = emf.createEntityManager()) {
+            return em.createQuery(
+                            "SELECT s FROM Subscription s WHERE s.loopSubscriptionId = :id", Subscription.class)
+                    .setParameter("id", loopSubscriptionId)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void upsert(Subscription subscription) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            em.merge(subscription);
+            em.getTransaction().commit();
+        }
+    }
+
 }

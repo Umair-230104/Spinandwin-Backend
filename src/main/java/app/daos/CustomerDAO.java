@@ -68,6 +68,7 @@ public class CustomerDAO
 
                 // loopCustomerId only if you want it updatable
                 existingCustomer.setLoopCustomerId(dto.getLoopCustomerId());
+                existingCustomer.setShopifyId(dto.getShopifyId());
 
                 // Active subscription (boolean)
                 existingCustomer.setActiveSubscription(
@@ -127,27 +128,31 @@ public class CustomerDAO
     }
 
 
-    public Customer findSingleByEmailOrPhone(String emailOrPhone) {
-        try (EntityManager em = emf.createEntityManager()) {
+    public Customer findSingleByEmailOrPhone(String emailOrPhone)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
 
             String value = emailOrPhone.trim(); // fjern whitespace i begge ender
 
             String jpql = """
-                SELECT c FROM Customer c
-                WHERE (c.email IS NOT NULL AND lower(c.email) = lower(:value))
-                   OR (c.phone IS NOT NULL AND c.phone = :value)
-                """;
+                    SELECT c FROM Customer c
+                    WHERE (c.email IS NOT NULL AND lower(c.email) = lower(:value))
+                       OR (c.phone IS NOT NULL AND c.phone = :value)
+                    """;
 
             List<Customer> customers = em.createQuery(jpql, Customer.class)
                     .setParameter("value", value)
                     .getResultList();
 
-            if (customers.isEmpty()) {
+            if (customers.isEmpty())
+            {
                 // ingen kunde fundet med hverken email eller telefon
                 return null;
             }
 
-            if (customers.size() > 1) {
+            if (customers.size() > 1)
+            {
                 // Valgfrit: log eller smid exception, så du ved der er dataproblem
                 // throw new IllegalStateException("Flere kunder fundet med: " + value);
             }
@@ -156,5 +161,30 @@ public class CustomerDAO
             return customers.get(0);
         }
     }
+
+    public Customer findByShopifyId(Long shopifyId)
+    {
+        try (var em = emf.createEntityManager())
+        {
+            return em.createQuery(
+                            "SELECT c FROM Customer c WHERE c.shopifyId = :sid", Customer.class)
+                    .setParameter("sid", shopifyId)
+                    .getSingleResult();
+        } catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    public void upsert(Customer customer)
+    {
+        try (var em = emf.createEntityManager())
+        {
+            em.getTransaction().begin();
+            em.merge(customer);
+            em.getTransaction().commit();
+        }
+    }
+
 
 }

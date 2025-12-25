@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 public class Main {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
 
-//        AppConfig.startServer();
+        AppConfig.startServer();
 
 //         === KUN når du vil sync'e fra Loop API til DB ===
 //         Kommentér ind når du vil køre importen,

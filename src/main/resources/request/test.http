@@ -22,7 +22,7 @@ POST http://localhost:2222/api/v1/customer/check-eligibility
 Content-Type: application/json
 
 {
-  "emailOrPhone": "email@email.dk"
+  "emailOrPhone": "email@emaitest.httpl.dk"
 }
 
 

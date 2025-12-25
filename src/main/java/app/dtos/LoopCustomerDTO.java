@@ -1,6 +1,7 @@
 package app.dtos;
 
 import app.entities.Customer;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -18,17 +19,22 @@ public class LoopCustomerDTO
     private String firstName;
     private String lastName;
     private String email;
+    @JsonAlias({"shopifyId", "customerShopifyId"})
     private Long shopifyId;
     private String phone;
 
-    @JsonProperty("activeSubscriptions")
+    @JsonAlias({"activeSubscriptions", "activeSubscriptionsCount"})
     private Integer activeSubscriptionsCount;
+
+    @JsonAlias({"allSubscriptionsCount", "allSubscriptions"})
     private Integer allSubscriptionsCount;
+
 
     public LoopCustomerDTO(Customer customer)
     {
 
         this.loopCustomerId = customer.getLoopCustomerId();
+        this.shopifyId = customer.getShopifyId();
         this.firstName = customer.getFirstName();
         this.lastName = customer.getLastName();
         this.email = customer.getEmail();

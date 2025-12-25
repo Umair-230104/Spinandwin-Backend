@@ -1,6 +1,7 @@
 package app.routes;
 
 import app.config.HibernateConfig;
+import app.controllers.LoopWebhookController;
 import app.controllers.SpinAndWinController;
 import app.daos.CustomerDAO;
 import app.daos.DeliveryDAO;
@@ -8,6 +9,9 @@ import app.daos.SubscriptionDAO;
 import app.daos.WheelSegmentDAO;
 import app.security.enums.Role;
 import app.service.CustomerEligibilityService;
+import app.service.LoopApiService;
+import app.service.LoopSyncService;
+import app.service.LoopWebhookService;
 import io.javalin.apibuilder.EndpointGroup;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -30,6 +34,12 @@ public class SpinAndWinRoutes
     // Controller (fælles controller)
     private final SpinAndWinController spinAndWinController = new SpinAndWinController(wheelSegmentDAO, eligibilityService);
 
+    // Services
+    private final LoopApiService loopApiService = new LoopApiService();
+    private final LoopSyncService loopSyncService = new LoopSyncService(customerDAO, subscriptionDAO);
+    private final LoopWebhookService loopWebhookService = new LoopWebhookService(loopApiService, loopSyncService);
+    private final LoopWebhookController loopWebhookController = new LoopWebhookController(loopWebhookService);
+
     public EndpointGroup getSpinAndWinRoutes()
     {
         return () ->
@@ -37,8 +47,11 @@ public class SpinAndWinRoutes
             get("/getallwheelsegments", spinAndWinController::getAllWheelSegments, Role.USER, Role.ADMIN, Role.ANYONE);
             put("/{id}/wheelsegment", spinAndWinController::updateWheelSegment, Role.USER, Role.ADMIN, Role.ANYONE);
 
-            // ✅ NY ROUTE: eligibility
+            // eligibility
             post("/customer/check-eligibility", spinAndWinController::checkEligibility, Role.USER, Role.ADMIN, Role.ANYONE);
+
+            // webhook (ingen auth til at starte med)
+            post("/webhooks/loop", loopWebhookController::receive, Role.ANYONE);
         };
     }
 }
