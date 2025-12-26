@@ -81,8 +81,16 @@ public class LoopSyncService {
             sub.setNextBillingAt(next);
         }
 
-        // 🔴 Customer sættes IKKE her længere
-        // → det sker i webhooken via syncCustomer(...)
+        // 🔗 Sæt relation til customer (kun reference, ingen opdatering)
+        if (dto.getCustomer() != null && dto.getCustomer().getShopifyId() != null) {
+            Customer customer =
+                    customerDAO.findByShopifyId(dto.getCustomer().getShopifyId());
+
+            if (customer != null) {
+                sub.setCustomer(customer);
+            }
+        }
+
 
         subscriptionDAO.upsert(sub);
     }

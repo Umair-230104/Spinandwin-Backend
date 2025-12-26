@@ -166,15 +166,15 @@ public class CustomerDAO
     {
         try (var em = emf.createEntityManager())
         {
-            return em.createQuery(
+            List<Customer> result = em.createQuery(
                             "SELECT c FROM Customer c WHERE c.shopifyId = :sid", Customer.class)
                     .setParameter("sid", shopifyId)
-                    .getSingleResult();
-        } catch (Exception e)
-        {
-            return null;
+                    .getResultList();
+
+            return result.isEmpty() ? null : result.get(0);
         }
     }
+
 
     public void upsert(Customer customer)
     {

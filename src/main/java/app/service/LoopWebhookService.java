@@ -32,39 +32,40 @@ public class LoopWebhookService
             switch (dto.getEvent())
             {
 
-                case "subscription.updated" ->
-                {
+                case "subscription.updated" -> {
 
                     Long loopSubId = dto.getData().getId();
                     if (loopSubId == null) return;
 
-                    // 1) hent subscription
                     LoopSubscriptionDTO sub = loopApiService.fetchSubscriptionById(loopSubId);
                     if (sub == null || sub.getCustomer() == null) return;
 
-                    // ✅ TEST-OVERRIDE (kun til lokal test)
+                    // test override (OK til lokal test)
                     if (dto.getData().getStatus() != null && !dto.getData().getStatus().isBlank()) {
                         sub.setStatus(dto.getData().getStatus());
                     }
 
-                    // 2) hent shopifyId fra subscription
-                    Long shopifyCustomerId = sub.getCustomer().getShopifyId();
-                    if (shopifyCustomerId == null) return;
-
-                    // 3) hent customer fra Loop via SHOPIFY id
-                    LoopCustomerDTO customer = loopApiService.fetchCustomerByShopifyId(shopifyCustomerId);
-
-                    // 4) sync customer lokalt
-                    if (customer != null)
-                    {
-                        loopSyncService.syncCustomer(customer);
-                    }
-
-                    // 5) sync subscription (sætter relationen)
+                    // sync subscription (med customerShopifyId som reference)
                     loopSyncService.syncSubscription(sub);
 
                     System.out.println("✅ Synced subscription to DB: " + sub.getLoopSubscriptionId());
                 }
+
+                case "customer.updated" -> {
+
+                    Long shopifyCustomerId = dto.getData().getId();
+                    if (shopifyCustomerId == null) return;
+
+                    LoopCustomerDTO customer =
+                            loopApiService.fetchCustomerByShopifyId(shopifyCustomerId);
+
+                    if (customer == null) return;
+
+                    loopSyncService.syncCustomer(customer);
+
+                    System.out.println("✅ Synced customer to DB: " + customer.getShopifyId());
+                }
+
 
 
                 default -> System.out.println("⚠️ Ignorerer event: " + dto.getEvent());

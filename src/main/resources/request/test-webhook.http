@@ -1,4 +1,4 @@
-### Test Loop webhook – basic
+### Test Loop webhook – basic subscription
 POST http://localhost:2222/api/v1/webhooks/loop
 Content-Type: application/json
 
@@ -10,19 +10,13 @@ Content-Type: application/json
   }
 }
 
-### Test Loop webhook – basic
+### Test Loop webhook – basic customer
 POST http://localhost:2222/api/v1/webhooks/loop
 Content-Type: application/json
 
 {
-"event": "customer.updated",
-"customer": {
-"shopifyId": 7685144412482,
-"loopCustomerId": 284234785,
-"email": "new@email.com",
-"firstName": "Patrick",
-"lastName": "Bang",
-"phone": "+4511111111",
-"activeSubscriptionsCount": 1
-}
+  "event": "customer.updated",
+  "data": {
+    "id": 7685144412482
+  }
 }
