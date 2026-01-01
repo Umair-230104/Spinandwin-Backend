@@ -1,12 +1,11 @@
 package app.controllers;
 
 import app.daos.WheelSegmentDAO;
-import app.dtos.EligibilityRequestDTO;
-import app.dtos.EligibilityResponseDTO;
-import app.dtos.WheelSegmentDTO;
+import app.dtos.*;
 import app.entities.WheelSegment;
 import app.exception.ApiException;
 import app.service.CustomerEligibilityService;
+import app.service.SpinService;
 import io.javalin.http.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +18,14 @@ public class SpinAndWinController {
 
     private final WheelSegmentDAO wheelSegmentDAO;
     private final CustomerEligibilityService eligibilityService;
+    private final SpinService spinService;
+
 
     public SpinAndWinController(WheelSegmentDAO wheelSegmentDAO,
-                                CustomerEligibilityService eligibilityService) {
+                                CustomerEligibilityService eligibilityService, SpinService spinService) {
         this.wheelSegmentDAO = wheelSegmentDAO;
         this.eligibilityService = eligibilityService;
+        this.spinService = spinService;
     }
 
     public void getAllWheelSegments(Context ctx) {
@@ -69,4 +71,35 @@ public class SpinAndWinController {
             throw new ApiException(400, e.getMessage());
         }
     }
+
+    // POST /spin
+    public void spin(Context ctx) {
+        try {
+            SpinRequestDTO req = ctx.bodyAsClass(SpinRequestDTO.class);
+
+            SpinResponseDTO response = spinService.spin(req.getCustomerId());
+
+            ctx.status(200).json(response);
+
+        } catch (Exception e) {
+            log.error("400 {}", e.getMessage());
+            throw new ApiException(400, e.getMessage());
+        }
+    }
+
+    // GET /spin-result/{id}
+    public void getSpinResult(Context ctx) {
+        try {
+            Long id = Long.parseLong(ctx.pathParam("id"));
+
+            SpinResultDTO result = spinService.getSpinResult(id);
+
+            ctx.status(200).json(result);
+
+        } catch (Exception e) {
+            log.error("404 {}", e.getMessage());
+            throw new ApiException(404, e.getMessage());
+        }
+    }
+
 }

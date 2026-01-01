@@ -1,39 +1,39 @@
 package app.entities;
 
+import app.Enums.SegmentType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "spin_results")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SpinResult
-{
+public class SpinResult {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    // hvem
+    private Long customerId;
 
-    @ManyToOne
-    @JoinColumn(name = "subscription_id")
-    private Subscription subscription;
+    // hvilken subscription / levering
+    private Long subscriptionId;
+    private Long deliveryId;
 
+    // hvad ramte kunden
     @ManyToOne
-    @JoinColumn(name = "delivery_id")
-    private Delivery delivery;
+    @JoinColumn(name = "wheel_segment_id")
+    private WheelSegment wheelSegment;
 
-    @ManyToOne
-    @JoinColumn(name = "segment_id")
-    private WheelSegment segment;
-    private LocalDateTime spunAt;
-    private boolean prizeApplied;       // om præmien er lagt på næste levering
-    private String appliedToOrderId;    // fx Shopify/Loop order id
+    @Enumerated(EnumType.STRING)
+    private SegmentType resultType; // PRIZE, TRY_AGAIN, NO_WIN
+
+    private boolean prizeApplied;
+
+    private LocalDateTime createdAt;
 }

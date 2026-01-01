@@ -34,3 +34,15 @@ Content-Type: application/json
 {
   "emailOrPhone": "12211221"
 }
+
+
+### Spin - first time
+POST http://localhost:2222/api/v1/spin
+Content-Type: application/json
+
+{
+  "customerId": 2
+}
+
+### Get spin result (vundet-side)
+GET http://localhost:2222/api/v1/spin-result/1

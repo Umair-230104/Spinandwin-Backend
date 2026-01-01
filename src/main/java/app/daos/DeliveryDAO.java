@@ -1,8 +1,11 @@
 package app.daos;
 
 import app.Enums.DeliveryStatus;
+import app.entities.Delivery;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+
+import java.util.List;
 
 public class DeliveryDAO {
 
@@ -36,4 +39,24 @@ public class DeliveryDAO {
             return count != null && count > 0;
         }
     }
+
+    public Delivery findLatestDeliveredByCustomer(Long customerId) {
+        try (EntityManager em = emf.createEntityManager()) {
+
+            List<Delivery> results = em.createQuery(
+                            "SELECT d FROM Delivery d " +
+                                    "WHERE d.subscription.customer.id = :customerId " +
+                                    "AND d.status = :status " +
+                                    "ORDER BY d.shippedAt DESC",
+                            Delivery.class
+                    )
+                    .setParameter("customerId", customerId)
+                    .setParameter("status", DeliveryStatus.SHIPPED)
+                    .setMaxResults(1)
+                    .getResultList();
+
+            return results.isEmpty() ? null : results.get(0);
+        }
+    }
+
 }

@@ -3,15 +3,9 @@ package app.routes;
 import app.config.HibernateConfig;
 import app.controllers.LoopWebhookController;
 import app.controllers.SpinAndWinController;
-import app.daos.CustomerDAO;
-import app.daos.DeliveryDAO;
-import app.daos.SubscriptionDAO;
-import app.daos.WheelSegmentDAO;
+import app.daos.*;
 import app.security.enums.Role;
-import app.service.CustomerEligibilityService;
-import app.service.LoopApiService;
-import app.service.LoopSyncService;
-import app.service.LoopWebhookService;
+import app.service.*;
 import io.javalin.apibuilder.EndpointGroup;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -27,12 +21,15 @@ public class SpinAndWinRoutes
     private final CustomerDAO customerDAO = new CustomerDAO(emf);
     private final SubscriptionDAO subscriptionDAO = new SubscriptionDAO(emf);
     private final DeliveryDAO deliveryDAO = new DeliveryDAO(emf);
+    private final SpinResultDAO spinResultDAO = new SpinResultDAO(emf);
+
 
     // Service
     private final CustomerEligibilityService eligibilityService = new CustomerEligibilityService(customerDAO, subscriptionDAO, deliveryDAO);
+    private final SpinService spinService = new SpinService(deliveryDAO, spinResultDAO, wheelSegmentDAO);
 
     // Controller (fælles controller)
-    private final SpinAndWinController spinAndWinController = new SpinAndWinController(wheelSegmentDAO, eligibilityService);
+    private final SpinAndWinController spinAndWinController = new SpinAndWinController(wheelSegmentDAO, eligibilityService, spinService);
 
     // Services
     private final LoopApiService loopApiService = new LoopApiService();
@@ -52,6 +49,10 @@ public class SpinAndWinRoutes
 
             // webhook (ingen auth til at starte med)
             post("/webhooks/loop", loopWebhookController::receive, Role.ANYONE);
+
+            post("/spin", spinAndWinController::spin, Role.USER, Role.ADMIN, Role.ANYONE);
+            get("/spin-result/{id}", spinAndWinController::getSpinResult, Role.ANYONE);
+
         };
     }
 }
