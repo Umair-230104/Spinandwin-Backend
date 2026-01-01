@@ -123,16 +123,31 @@ public class HibernateConfig
 //        return props;
 //    }
 
+//    private static Properties setTestProperties(Properties props)
+//    {
+//        // props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+//        props.put("hibernate.connection.driver_class", "org.testcontainers.jdbc.ContainerDatabaseDriver");
+//        props.put("hibernate.connection.url", "jdbc:tc:postgresql:15.3-alpine3.18:///test_db");
+//        props.put("hibernate.connection.username", "postgres");
+//        props.put("hibernate.connection.password", "postgres");
+//        props.put("hibernate.archive.autodetection", "class");
+//        props.put("hibernate.show_sql", "true");
+//        props.put("hibernate.hbm2ddl.auto", "create-drop");
+//        return props;
+//    }
+
     private static Properties setTestProperties(Properties props)
     {
-        // props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        props.put("hibernate.connection.driver_class", "org.testcontainers.jdbc.ContainerDatabaseDriver");
-        props.put("hibernate.connection.url", "jdbc:tc:postgresql:15.3-alpine3.18:///test_db");
-        props.put("hibernate.connection.username", "postgres");
-        props.put("hibernate.connection.password", "postgres");
-        props.put("hibernate.archive.autodetection", "class");
-        props.put("hibernate.show_sql", "true");
+        props.put("hibernate.connection.driver_class", "org.h2.Driver");
+        props.put("hibernate.connection.url", "jdbc:h2:mem:test_db;DB_CLOSE_DELAY=-1;MODE=PostgreSQL");
+        props.put("hibernate.connection.username", "sa");
+        props.put("hibernate.connection.password", "");
         props.put("hibernate.hbm2ddl.auto", "create-drop");
+
+        props.put("hibernate.show_sql", "true");
+        props.put("hibernate.format_sql", "true");
+
         return props;
     }
+
 }
