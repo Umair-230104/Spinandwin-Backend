@@ -20,11 +20,21 @@ public class HibernateConfig
 
     private static EntityManagerFactory emfTest;
 
+    private static boolean isTest = false;
+
+    public static void enableTestMode() {
+        isTest = true;
+    }
+
     public static EntityManagerFactory getEntityManagerFactory(String DBName)
     {
+        if (isTest) {
+            return getEntityManagerFactoryForTest();
+        }
         if (emf == null) emf = createEMF(false, DBName);
         return emf;
     }
+
 
     public static EntityManagerFactory getEntityManagerFactoryForTest()
     {

@@ -15,12 +15,7 @@ public abstract class DaoTestBase
 
     @BeforeAll
     static void beforeAll() {
-
-//        System.setProperty(
-//                "org.testcontainers.dockerclient.provider",
-//                "org.testcontainers.dockerclient.DockerDesktopClientProviderStrategy"
-//        );
-
+        HibernateConfig.enableTestMode(); // hvis ikke allerede gjort globalt
         emf = HibernateConfig.getEntityManagerFactoryForTest();
     }
 
@@ -38,12 +33,12 @@ public abstract class DaoTestBase
         // fordi rækkefølgen af DELETE afhænger af relationer.
     }
 
-    @AfterAll
-    static void afterAll()
-    {
-        if (emf != null) emf.close();
-    }
-
+//    @AfterAll
+//    static void tearDownBase() {
+//        if (emf != null && emf.isOpen()) {
+//            emf.close(); // ✅ KUN ÉN GANG
+//        }
+//    }
     protected void cleanDb(String... deleteQueries)
     {
         EntityManager em = emf.createEntityManager();
