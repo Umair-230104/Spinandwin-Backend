@@ -15,6 +15,7 @@ public class Main {
 
         AppConfig.startServer();
 
+
 //         === KUN når du vil sync'e fra Loop API til DB ===
 //         Kommentér ind når du vil køre importen,
 //         og kommentér ud igen bagefter så server-start ikke tager 100 år.
