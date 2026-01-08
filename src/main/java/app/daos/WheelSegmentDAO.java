@@ -62,7 +62,6 @@ public class WheelSegmentDAO
                 throw new Exception("Wheel segment with id " + id + " not found");
             }
 
-            // Opdater felter baseret på DTO
             existing.setPosition(dto.getPosition());
             existing.setType(dto.getType());
             existing.setTitle(dto.getTitle());

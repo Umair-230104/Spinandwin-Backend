@@ -7,12 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "spin_results")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SpinResult {
+public class SpinResult
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package app.service;
 
+import app.Enums.SegmentType;
 import app.daos.DeliveryDAO;
 import app.daos.SpinResultDAO;
 import app.daos.WheelSegmentDAO;
@@ -8,13 +9,13 @@ import app.dtos.SpinResultDTO;
 import app.entities.Delivery;
 import app.entities.SpinResult;
 import app.entities.WheelSegment;
-import app.Enums.SegmentType;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
-public class SpinService {
+public class SpinService
+{
 
     private final DeliveryDAO deliveryDAO;
     private final SpinResultDAO spinResultDAO;
@@ -24,17 +25,20 @@ public class SpinService {
             DeliveryDAO deliveryDAO,
             SpinResultDAO spinResultDAO,
             WheelSegmentDAO wheelSegmentDAO
-    ) {
+    )
+    {
         this.deliveryDAO = deliveryDAO;
         this.spinResultDAO = spinResultDAO;
         this.wheelSegmentDAO = wheelSegmentDAO;
     }
 
-    public SpinResultDTO getSpinResult(Long spinResultId) throws Exception {
+    public SpinResultDTO getSpinResult(Long spinResultId) throws Exception
+    {
 
         SpinResult spinResult = spinResultDAO.getById(spinResultId);
 
-        if (spinResult == null) {
+        if (spinResult == null)
+        {
             throw new Exception("Spin result not found");
         }
 
@@ -52,38 +56,42 @@ public class SpinService {
     }
 
 
-    public SpinResponseDTO spin(Long customerId) throws Exception {
+    public SpinResponseDTO spin(Long customerId) throws Exception
+    {
 
-        // 1️⃣ Find seneste leverede (SHIPPED) delivery
+        // Find seneste leverede (SHIPPED) delivery
         Delivery delivery = deliveryDAO.findLatestDeliveredByCustomer(customerId);
 
-        if (delivery == null) {
+        if (delivery == null)
+        {
             throw new Exception("Customer has no shipped deliveries – spin not allowed");
         }
 
-        // 2️⃣ Tjek om kunden allerede har spundet for denne delivery
+        // Tjek om kunden allerede har spundet for denne delivery
         SpinResult existing =
                 spinResultDAO.findByCustomerAndDelivery(customerId, delivery.getId());
 
-        if (existing != null) {
+        if (existing != null)
+        {
             throw new Exception("Customer has already spun for this delivery");
         }
 
-        // 3️⃣ Hent aktive wheel segments
+        // Hent aktive wheel segments
         List<WheelSegment> activeSegments = wheelSegmentDAO.getAll()
                 .stream()
                 .filter(WheelSegment::isActive)
                 .toList();
 
-        if (activeSegments.isEmpty()) {
+        if (activeSegments.isEmpty())
+        {
             throw new Exception("No active wheel segments available");
         }
 
-        // 4️⃣ Vælg random segment
+        // Vælg random segment
         WheelSegment selected =
                 activeSegments.get(new Random().nextInt(activeSegments.size()));
 
-        // 5️⃣ Opret SpinResult
+        // Opret SpinResult
         SpinResult spinResult = new SpinResult();
         spinResult.setCustomerId(customerId);
         spinResult.setSubscriptionId(delivery.getSubscription().getId());
@@ -95,7 +103,7 @@ public class SpinService {
 
         spinResultDAO.create(spinResult);
 
-        // 6️⃣ Returnér respons til frontend
+        // Returnér respons til frontend
         return SpinResponseDTO.builder()
                 .spinResultId(spinResult.getId())
                 .type(spinResult.getResultType())

@@ -49,9 +49,7 @@ public class Subscription
 
         if (dto.getNextBillingDateEpoch() != null)
         {
-            this.nextBillingAt = LocalDateTime.ofEpochSecond(
-                    dto.getNextBillingDateEpoch(), 0, java.time.ZoneOffset.UTC
-            );
+            this.nextBillingAt = LocalDateTime.ofEpochSecond(dto.getNextBillingDateEpoch(), 0, java.time.ZoneOffset.UTC);
         }
     }
 }

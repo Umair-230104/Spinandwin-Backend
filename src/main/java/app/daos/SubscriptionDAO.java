@@ -66,7 +66,6 @@ public class SubscriptionDAO
                 throw new Exception("Subscription with id " + id + " not found");
             }
 
-            // Set fields
             existing.setLoopSubscriptionId(updatedData.getLoopSubscriptionId());
             existing.setCustomer(updatedData.getCustomer());
             existing.setStatus(updatedData.getStatus());
@@ -122,41 +121,38 @@ public class SubscriptionDAO
         }
     }
 
-    /**
-     * Tjekker om der findes mindst ét abonnement
-     * for en given customer med en given status.
-     */
-    public boolean existsByCustomerIdAndStatus(Long customerId, SubscriptionStatus status) {
-        try (EntityManager em = emf.createEntityManager()) {
 
+    // Tjekker om der findes mindst ét abonnement for en given customer med en given status.
+    public boolean existsByCustomerIdAndStatus(Long customerId, SubscriptionStatus status)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
             String jpql = """
                     SELECT COUNT(s) FROM Subscription s
                     WHERE s.customer.id = :customerId
                       AND s.status = :status
                     """;
-
-            Long count = em.createQuery(jpql, Long.class)
-                    .setParameter("customerId", customerId)
-                    .setParameter("status", status)
-                    .getSingleResult();
-
+            Long count = em.createQuery(jpql, Long.class).setParameter("customerId", customerId).setParameter("status", status).getSingleResult();
             return count != null && count > 0;
         }
     }
 
-    public Subscription findByLoopSubscriptionId(Long loopSubscriptionId) {
-        try (var em = emf.createEntityManager()) {
-            return em.createQuery(
-                            "SELECT s FROM Subscription s WHERE s.loopSubscriptionId = :id", Subscription.class)
-                    .setParameter("id", loopSubscriptionId)
-                    .getSingleResult();
-        } catch (Exception e) {
+
+    public Subscription findByLoopSubscriptionId(Long loopSubscriptionId)
+    {
+        try (var em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT s FROM Subscription s WHERE s.loopSubscriptionId = :id", Subscription.class).setParameter("id", loopSubscriptionId).getSingleResult();
+        } catch (Exception e)
+        {
             return null;
         }
     }
 
-    public void upsert(Subscription subscription) {
-        try (var em = emf.createEntityManager()) {
+    public void upsert(Subscription subscription)
+    {
+        try (var em = emf.createEntityManager())
+        {
             em.getTransaction().begin();
             em.merge(subscription);
             em.getTransaction().commit();

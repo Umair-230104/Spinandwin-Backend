@@ -65,16 +65,11 @@ public class CustomerDAO
                 existingCustomer.setLastName(dto.getLastName());
                 existingCustomer.setEmail(dto.getEmail());
                 existingCustomer.setPhone(dto.getPhone());
-
-                // loopCustomerId only if you want it updatable
                 existingCustomer.setLoopCustomerId(dto.getLoopCustomerId());
                 existingCustomer.setShopifyId(dto.getShopifyId());
 
                 // Active subscription (boolean)
-                existingCustomer.setActiveSubscription(
-                        dto.getActiveSubscriptionsCount() != null &&
-                                dto.getActiveSubscriptionsCount() > 0
-                );
+                existingCustomer.setActiveSubscription(dto.getActiveSubscriptionsCount() != null && dto.getActiveSubscriptionsCount() > 0);
 
                 Customer merged = em.merge(existingCustomer);
                 updatedDTO = new LoopCustomerDTO(merged);
@@ -133,7 +128,7 @@ public class CustomerDAO
         try (EntityManager em = emf.createEntityManager())
         {
 
-            String value = emailOrPhone.trim(); // fjern whitespace i begge ender
+            String value = emailOrPhone.trim();
 
             String jpql = """
                     SELECT c FROM Customer c
@@ -141,23 +136,18 @@ public class CustomerDAO
                        OR (c.phone IS NOT NULL AND c.phone = :value)
                     """;
 
-            List<Customer> customers = em.createQuery(jpql, Customer.class)
-                    .setParameter("value", value)
-                    .getResultList();
+            List<Customer> customers = em.createQuery(jpql, Customer.class).setParameter("value", value).getResultList();
 
             if (customers.isEmpty())
             {
-                // ingen kunde fundet med hverken email eller telefon
                 return null;
             }
 
             if (customers.size() > 1)
             {
                 // Valgfrit: log eller smid exception, så du ved der er dataproblem
-                // throw new IllegalStateException("Flere kunder fundet med: " + value);
+                throw new IllegalStateException("Flere kunder fundet med: " + value);
             }
-
-            // Tag første kunde (normalt vil der kun være én)
             return customers.get(0);
         }
     }
@@ -166,10 +156,7 @@ public class CustomerDAO
     {
         try (var em = emf.createEntityManager())
         {
-            List<Customer> result = em.createQuery(
-                            "SELECT c FROM Customer c WHERE c.shopifyId = :sid", Customer.class)
-                    .setParameter("sid", shopifyId)
-                    .getResultList();
+            List<Customer> result = em.createQuery("SELECT c FROM Customer c WHERE c.shopifyId = :sid", Customer.class).setParameter("sid", shopifyId).getResultList();
 
             return result.isEmpty() ? null : result.get(0);
         }

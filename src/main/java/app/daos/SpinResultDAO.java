@@ -6,70 +6,73 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
 
-public class SpinResultDAO {
+public class SpinResultDAO
+{
 
     private final EntityManagerFactory emf;
 
-    public SpinResultDAO(EntityManagerFactory emf) {
+    public SpinResultDAO(EntityManagerFactory emf)
+    {
         this.emf = emf;
     }
 
-    // =======================
-    // GET ALL
-    // =======================
-    public List<SpinResult> getAll() {
-        try (EntityManager em = emf.createEntityManager()) {
-            return em.createQuery(
-                    "SELECT s FROM SpinResult s",
-                    SpinResult.class
-            ).getResultList();
+
+    public List<SpinResult> getAll()
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT s FROM SpinResult s", SpinResult.class).getResultList();
         }
     }
 
-    // =======================
-    // GET BY ID
-    // =======================
-    public SpinResult getById(Long id) {
-        try (EntityManager em = emf.createEntityManager()) {
+
+    public SpinResult getById(Long id)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
             return em.find(SpinResult.class, id);
         }
     }
 
-    // =======================
-    // CREATE
-    // =======================
-    public SpinResult create(SpinResult spinResult) {
+
+    public SpinResult create(SpinResult spinResult)
+    {
         EntityManager em = emf.createEntityManager();
 
-        try {
+        try
+        {
             em.getTransaction().begin();
             em.persist(spinResult);
             em.getTransaction().commit();
             return spinResult;
 
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
+        } catch (Exception e)
+        {
+            if (em.getTransaction().isActive())
+            {
                 em.getTransaction().rollback();
             }
             throw e;
 
-        } finally {
+        } finally
+        {
             em.close();
         }
     }
 
-    // =======================
-    // UPDATE
-    // =======================
-    public SpinResult update(Long id, SpinResult updatedSpinResult) throws Exception {
+
+    public SpinResult update(Long id, SpinResult updatedSpinResult) throws Exception
+    {
         EntityManager em = emf.createEntityManager();
 
-        try {
+        try
+        {
             em.getTransaction().begin();
 
             SpinResult existing = em.find(SpinResult.class, id);
 
-            if (existing == null) {
+            if (existing == null)
+            {
                 throw new Exception("SpinResult with id " + id + " not found");
             }
 
@@ -87,69 +90,62 @@ public class SpinResultDAO {
             em.getTransaction().commit();
             return merged;
 
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
+        } catch (Exception e)
+        {
+            if (em.getTransaction().isActive())
+            {
                 em.getTransaction().rollback();
             }
             throw e;
 
-        } finally {
+        } finally
+        {
             em.close();
         }
     }
 
-    // =======================
-    // DELETE
-    // =======================
-    public void delete(Long id) {
+
+    public void delete(Long id)
+    {
         EntityManager em = emf.createEntityManager();
 
-        try {
+        try
+        {
             em.getTransaction().begin();
 
             SpinResult spinResult = em.find(SpinResult.class, id);
 
-            if (spinResult == null) {
+            if (spinResult == null)
+            {
                 throw new IllegalArgumentException("SpinResult not found: " + id);
             }
 
             em.remove(spinResult);
             em.getTransaction().commit();
 
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
+        } catch (Exception e)
+        {
+            if (em.getTransaction().isActive())
+            {
                 em.getTransaction().rollback();
             }
             throw e;
 
-        } finally {
+        } finally
+        {
             em.close();
         }
     }
 
-    // =======================
-// FIND BY CUSTOMER + DELIVERY
-// (bruges til at stoppe dobbelt-spin)
-// =======================
-    public SpinResult findByCustomerAndDelivery(Long customerId, Long deliveryId) {
-        try (EntityManager em = emf.createEntityManager()) {
 
-            List<SpinResult> results = em.createQuery(
-                            "SELECT s FROM SpinResult s " +
-                                    "WHERE s.customerId = :customerId " +
-                                    "AND s.deliveryId = :deliveryId " +
-                                    "ORDER BY s.createdAt DESC",
-                            SpinResult.class
-                    )
-                    .setParameter("customerId", customerId)
-                    .setParameter("deliveryId", deliveryId)
-                    .setMaxResults(1)
-                    .getResultList();
+    public SpinResult findByCustomerAndDelivery(Long customerId, Long deliveryId)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+
+            List<SpinResult> results = em.createQuery("SELECT s FROM SpinResult s " + "WHERE s.customerId = :customerId " + "AND s.deliveryId = :deliveryId " + "ORDER BY s.createdAt DESC", SpinResult.class).setParameter("customerId", customerId).setParameter("deliveryId", deliveryId).setMaxResults(1).getResultList();
 
             return results.isEmpty() ? null : results.get(0);
         }
     }
-
-
-
 }

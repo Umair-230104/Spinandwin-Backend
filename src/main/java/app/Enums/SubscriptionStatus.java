@@ -1,6 +1,7 @@
 package app.Enums;
 
-public enum SubscriptionStatus {
+public enum SubscriptionStatus
+{
     ACTIVE,
     PAUSED,
     CANCELLED

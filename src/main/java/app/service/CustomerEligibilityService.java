@@ -23,12 +23,7 @@ public class CustomerEligibilityService
         this.deliveryDAO = deliveryDAO;
     }
 
-    /**
-     * Tjekker om en kunde er berettiget til at spinne:
-     * 1) Findes kunden (email eller telefon)?
-     * 2) Har kunden et aktivt abonnement?
-     * 3) Har kunden mindst én levering med status SHIPPED?
-     */
+
     public EligibilityResponseDTO checkEligibility(String emailOrPhone)
     {
 
@@ -76,7 +71,7 @@ public class CustomerEligibilityService
             );
         }
 
-        // 4) Hvis vi kommer hertil, er kunden berettiget til at spinne 🎉
+        // 4) Hvis man kommer hertil, er kunden berettiget til at spinne
         return new EligibilityResponseDTO(
                 true,
                 "OK",

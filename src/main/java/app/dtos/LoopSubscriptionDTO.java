@@ -24,13 +24,5 @@ public class LoopSubscriptionDTO
     private LoopBillingPolicyDTO billingPolicy;
     private LoopDeliveryPolicyDTO deliveryPolicy;
 
-    public LoopSubscriptionDTO(Subscription subscription)
-    {
-        this.loopSubscriptionId = subscription.getLoopSubscriptionId();
-        this.status = subscription.getStatus().name();
-        if (subscription.getNextBillingAt() != null)
-        {
-            this.nextBillingDateEpoch = subscription.getNextBillingAt().toEpochSecond(java.time.ZoneOffset.UTC);
-        }
-    }
+
 }

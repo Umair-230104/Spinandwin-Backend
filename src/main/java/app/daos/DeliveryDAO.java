@@ -7,7 +7,8 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
 
-public class DeliveryDAO {
+public class DeliveryDAO
+{
 
     private final EntityManagerFactory emf;
 
@@ -16,14 +17,10 @@ public class DeliveryDAO {
         this.emf = emf;
     }
 
-    /**
-     * Tjekker om kunden har mindst én levering,
-     * hvor status = SHIPPED.
-     *
-     * Vi går via Delivery -> Subscription -> Customer.
-     */
-    public boolean existsDeliveredByCustomerId(Long customerId) {
-        try (EntityManager em = emf.createEntityManager()) {
+    public boolean existsDeliveredByCustomerId(Long customerId)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
 
             String jpql = """
                     SELECT COUNT(d) FROM Delivery d
@@ -40,8 +37,10 @@ public class DeliveryDAO {
         }
     }
 
-    public Delivery findLatestDeliveredByCustomer(Long customerId) {
-        try (EntityManager em = emf.createEntityManager()) {
+    public Delivery findLatestDeliveredByCustomer(Long customerId)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
 
             List<Delivery> results = em.createQuery(
                             "SELECT d FROM Delivery d " +

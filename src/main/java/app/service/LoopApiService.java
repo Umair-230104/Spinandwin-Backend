@@ -1,6 +1,9 @@
 package app.service;
 
-import app.dtos.*;
+import app.dtos.LoopCustomerDTO;
+import app.dtos.LoopCustomerSingleResponseDTO;
+import app.dtos.LoopSubscriptionDTO;
+import app.dtos.LoopSubscriptionSingleResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -10,7 +13,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class LoopApiService {
+public class LoopApiService
+{
 
     private static final String BASE_URL = "https://api.loopsubscriptions.com/admin/2023-10";
     private static final String TOKEN = System.getenv("LOOP_ADMIN_TOKEN");
@@ -18,10 +22,11 @@ public class LoopApiService {
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
 
-    // ===================== PUBLIC API =====================
 
+    // ===================== PUBLIC API =====================
     public LoopSubscriptionDTO fetchSubscriptionById(Long subscriptionId)
-            throws IOException, InterruptedException, URISyntaxException {
+            throws IOException, InterruptedException, URISyntaxException
+    {
 
         String url = BASE_URL + "/subscription/" + subscriptionId;
         HttpResponse<String> res = send(buildGet(url));
@@ -29,7 +34,8 @@ public class LoopApiService {
         LoopSubscriptionSingleResponseDTO response =
                 parseIf200Dto(res, LoopSubscriptionSingleResponseDTO.class);
 
-        if (response == null) {
+        if (response == null)
+        {
             return null;
         }
 
@@ -38,7 +44,8 @@ public class LoopApiService {
 
 
     public LoopCustomerDTO fetchCustomerByShopifyId(Long customerShopifyId)
-            throws IOException, InterruptedException, URISyntaxException {
+            throws IOException, InterruptedException, URISyntaxException
+    {
 
         String url = BASE_URL + "/customer/" + customerShopifyId; // <-- vigtig
         System.out.println("➡️ GET " + url);
@@ -46,7 +53,8 @@ public class LoopApiService {
         HttpResponse<String> res = send(buildGet(url));
 
         System.out.println("⬅️ STATUS: " + res.statusCode());
-        if (res.statusCode() != 200) {
+        if (res.statusCode() != 200)
+        {
             System.out.println("⬅️ BODY:\n" + res.body());
             return null;
         }
@@ -58,12 +66,9 @@ public class LoopApiService {
     }
 
 
-
-
-
     // ===================== HTTP HELPERS =====================
-
-    private HttpRequest buildGet(String url) throws URISyntaxException {
+    private HttpRequest buildGet(String url) throws URISyntaxException
+    {
         return HttpRequest.newBuilder()
                 .uri(new URI(url))
                 .header("accept", "application/json")
@@ -73,14 +78,17 @@ public class LoopApiService {
     }
 
     private HttpResponse<String> send(HttpRequest req)
-            throws IOException, InterruptedException {
+            throws IOException, InterruptedException
+    {
         return client.send(req, HttpResponse.BodyHandlers.ofString());
     }
 
     private <T> T parseIf200Dto(HttpResponse<String> res, Class<T> clazz)
-            throws IOException {
+            throws IOException
+    {
 
-        if (res != null && res.statusCode() == 200) {
+        if (res != null && res.statusCode() == 200)
+        {
             return mapper.readValue(res.body(), clazz);
         }
         return null;

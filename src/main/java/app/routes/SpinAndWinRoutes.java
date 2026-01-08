@@ -23,7 +23,6 @@ public class SpinAndWinRoutes
     private final DeliveryDAO deliveryDAO = new DeliveryDAO(emf);
     private final SpinResultDAO spinResultDAO = new SpinResultDAO(emf);
 
-
     // Service
     private final CustomerEligibilityService eligibilityService = new CustomerEligibilityService(customerDAO, subscriptionDAO, deliveryDAO);
     private final SpinService spinService = new SpinService(deliveryDAO, spinResultDAO, wheelSegmentDAO);

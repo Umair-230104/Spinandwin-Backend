@@ -21,5 +21,5 @@ public class SpinWheel
     private boolean active;    // hvilket hjul der bruges nu
 
     @OneToMany(mappedBy = "wheel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WheelSegment> segments; // typisk 9 felter
+    private List<WheelSegment> segments;
 }

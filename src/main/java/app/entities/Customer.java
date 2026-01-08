@@ -23,11 +23,11 @@ public class Customer
     @Column(unique = true)
     private String email;
 
-    @Column(unique = true)          // kan være null hvis de kun bruger telefon
-    private String phone;           // kan være null hvis de kun bruger email
+    @Column(unique = true)
+    private String phone;
     private Long loopCustomerId;    // id fra Loop API
 
-    @Column(unique = true)         // ✅ vigtig
+    @Column(unique = true)
     private Long shopifyId;        // Shopify customer id (bruges til /customer/{customerShopifyId})
 
     @Column(nullable = false)
@@ -42,9 +42,7 @@ public class Customer
         this.lastName = loopCustomerDTO.getLastName();
         this.email = loopCustomerDTO.getEmail();
         this.phone = loopCustomerDTO.getPhone();
-        this.activeSubscription =
-                loopCustomerDTO.getActiveSubscriptionsCount() != null
-                        && loopCustomerDTO.getActiveSubscriptionsCount() > 0;
+        this.activeSubscription = loopCustomerDTO.getActiveSubscriptionsCount() != null && loopCustomerDTO.getActiveSubscriptionsCount() > 0;
 
     }
 }

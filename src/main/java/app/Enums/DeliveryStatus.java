@@ -1,6 +1,7 @@
 package app.Enums;
 
-public enum DeliveryStatus {
+public enum DeliveryStatus
+{
     PENDING,
     SHIPPED,
     CANCELLED,

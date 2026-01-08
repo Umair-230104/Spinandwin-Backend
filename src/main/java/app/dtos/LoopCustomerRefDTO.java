@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class LoopCustomerRefDTO
 {
     private Long id;          // Loop customer id
-    private Long shopifyId;   // kan bruges senere, optional
+    private Long shopifyId;   // kan bruges senere til at hente shopify customer id direkte fra Loop
 }
